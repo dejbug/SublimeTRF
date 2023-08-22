@@ -1,0 +1,7 @@
+<snippet>
+	<content><![CDATA[
+042 ${1:DD}/${2:MM}/${3:YYYY}
+]]></content>
+	<tabTrigger>042</tabTrigger>
+	<scope>source.trf</scope>
+</snippet>
