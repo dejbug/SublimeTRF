@@ -28,17 +28,21 @@ Team names may touch the first player ID. The only workaround is to keep the tea
 
 All of this for `Sublime Text Build 4152`.
 
-## Symbolic Links
+## ST: Plugins - Editing is only Possible in TextCommands
+
+So we have to do it [like this guy](https://forum.sublimetext.com/t/eventlistener-views-and-edit-objects). Use our ViewListener to auto-trigger our TextCommands. In other words, the TextCommands are the real workhorse here. Also let's see if we can do nice things with "Phantoms" (transient insertions serving as read-only annotations), auto-completion lists, and such.
+
+## ST: Symbolic Links
 
 With `.sublime-syntax` files it's enough to have a symlink in the User Packages folder. This **is not the case** with `.sublime-snippet` files!
 
-## Snippets - Multiple Triggers with Trigger Insertion
+## ST4 Bug: Snippets - Multiple Triggers with Trigger Insertion
 
 There is a way for snippets to use [multiple triggers](https://forum.sublimetext.com/t/multiple-tabtrigger-tags-in-a-snippet/1409) but this was obviously a quick hack, [not a design decision](https://docs.sublimetext.io/guide/extensibility/snippets.html#snippets-file-format). For example: I want '^042' and '^052' to trigger the same snippet but re-insert the trigger text which obviously varies between invocations. The snippet fields start with `$1`, as in a shell script, but unlike a shell script `$0` has a different meaning. It seems that `$TM_CURRENT_WORD` was inteded for this but it only works with a single trigger; with multiple triggers it inserts a space. I went through the trouble to write a [bug report](https://github.com/sublimehq/sublime_text/issues/6113) for this.
 
 This means **we need a snippet for every single trigger** no matter how similar they are.
 
-## Snippets - Trigger Bug
+## ST4 Bug: Snippets - Trigger Bug
 
 Sometimes I [need to trigger the snippet twice](https://forum.sublimetext.com/t/tab-completion-for-snippets-with-unexpected-behavior/22564/3). I know this is a **bug** (and it wasn't solved, let alone properly understood in this forum thread) because when I enable command logging it works as expacted. Basically, when you observe it you collapse the waveform...
 
