@@ -1,9 +1,9 @@
 import sublime
 import sublime_plugin
 
-import datetime
+import datetime, time
 
-class SublimeTRFCommand(sublime_plugin.ViewEventListener):
+class SublimeTrfViewCommand(sublime_plugin.ViewEventListener):
 
 	def on_load(self):
 		# print(dir(sublime_plugin))
@@ -11,7 +11,8 @@ class SublimeTRFCommand(sublime_plugin.ViewEventListener):
 		# print(self.__dict__)
 		pass
 
-	def on_modified(self):
+	# def on_modified(self):
+	def on_modified_async(self):
 		n = self.view.file_name()
 		if not n or not n.lower().endswith('.trf'):
 			return
@@ -36,9 +37,13 @@ class SublimeTRFCommand(sublime_plugin.ViewEventListener):
 			# print(now, s, scopes)
 			# print(now, 'keyword.trf' in scopes)
 
-			# Something like this.
+			# Something like this?
 			linereg = self.view.line(s.b)
 			line = self.view.substr(linereg)
 			print(now, linereg, line)
-			if line.startswith('012'):
-				print('TOURNAMENT NAME')
+			if len(line) == 3 and line.startswith('042'):
+				print('TOURNAMENT START DATE')
+				# self.view.run_command('sublime_trf_text', args = { 'action': '042' })
+				# time.sleep(2) # We'd need this so UNDO is possible! This just won't do!!
+				self.view.run_command('sublime_trf_text', args = { 'action': 'hint' })
+

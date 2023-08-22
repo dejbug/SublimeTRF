@@ -28,6 +28,14 @@ Team names may touch the first player ID. The only workaround is to keep the tea
 
 All of this for `Sublime Text Build 4152`.
 
+## ST: Closing a window loses the tabs if another window was open
+
+The other window was the keybinding config (why does it force-open a new window anyway?). This is true of e.g. Firefox as well, but there it remembers the tabs inside a window and has a button to let you restore the whole thing. With ST you're supposed to use Projects (Workspaces). Mildly annoying, but annoyances are accumulating quickly.
+
+## ST Docs: Methods are listed in no particular order
+
+Scrolling through [the docs](https://www.sublimetext.com/docs/api_reference.html#sublime.View) is a bit disorienting. Use <C-f>. Use `for n in sorted(dir(view)): print(n)` to get an overview.
+
 ## ST: Plugins - Editing is only Possible in TextCommands
 
 So we have to do it [like this guy](https://forum.sublimetext.com/t/eventlistener-views-and-edit-objects). Use our ViewListener to auto-trigger our TextCommands. In other words, the TextCommands are the real workhorse here. Also let's see if we can do nice things with "Phantoms" (transient insertions serving as read-only annotations), auto-completion lists, and such.
