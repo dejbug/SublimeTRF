@@ -1,0 +1,149 @@
+%YAML 1.2
+---
+# https://github.com/dejbug/SublimeTRF
+#
+# https://handbook.fide.com/chapter/C04A
+# https://handbook.fide.com/files/handbook/fidexchg.txt
+# https://handbook.fide.com/files/handbook/C04Annex2_TRF16.pdf
+# http://www.rrweb.org/javafo/aum/JaVaFo2_AUM.htm
+#
+# See http://www.sublimetext.com/docs/syntax.html
+name: TRF
+scope: source.trf
+version: 2
+
+file_extensions:
+  - trf
+
+variables:
+  rank: '(?:[1-9]\d\d\d| [1-9]\d\d|  [1-9]\d|   [1-9])'
+  DD: '(?:3[01]|[12]\d|0\d)'
+  MM: '(?:1[0-2]|0\d)'
+  YY: '\d{2}'
+  YYYY: '\d{4}'
+  DDMMYYYY: '(?:{{DD}}/{{MM}}/{{YYYY}})'
+  YYMMDD: '(?:{{YY}}/{{MM}}/{{DD}})'
+  YYYYMMDD: '(?:{{YYYY}}/{{MM}}/{{DD}})'
+  birthdate: '(?:[ ]{10}|{{YYYY}}[ ]{6}|{{YYYYMMDD}})' # '[ \d]{10}'
+  federation: '[A-Z]{3}'
+
+contexts:
+  main:
+    - match: '^012 '
+      scope: keyword.trf name.tournament.trf
+      push: string
+    - match: '^022 '
+      scope: keyword.trf city.tournament.trf
+      push: string
+    - match: '^(032 )({{federation}})'
+      captures:
+        1: keyword.trf
+        2: entity.name.constant.trf federation.tournament.trf
+    - match: '^042 '
+      scope: keyword.trf # start.date.tournament.trf
+      push: tournament_date
+    - match: '^052 '
+      scope: keyword.trf # end.date.tournament.trf
+      push: tournament_date
+    - match: '^062 '
+      scope: keyword.trf # players.count.tournament.trf
+      push: string
+    - match: '^072 '
+      scope: keyword.trf # rated.players.count.tournament.trf
+      push: string
+    - match: '^082 '
+      scope: keyword.trf # teams.count.tournament.trf
+      push: string
+    - match: '^092 '
+      scope: keyword.trf # type.tournament.trf
+      push: string
+    - match: '^102 '
+      scope: keyword.trf # chief.arbiter.tournament.trf
+      push: string
+    - match: '^112 '
+      scope: keyword.trf # deputy.arbiter.tournament.trf
+      push: string
+    - match: '^122 '
+      scope: keyword.trf # allotted.time.tournament.trf
+      push: string
+    - match: '^(XXC|XXR|XXZ) '
+      scope: keyword.trf
+    - match: '^132[ ]{86}'
+      scope: keyword.trf
+      push: dates_line
+    - match: '^001 '
+      scope: keyword.trf
+      push: player_line
+    - match: '^013 '
+      scope: keyword.trf
+      push: team_line_start
+    - match: '.'
+      scope: sublimelinter.outline.violation.trf
+
+  string:
+    - match: .+
+      scope: string.trf
+    - match: $
+      pop: true
+
+  dates_line:
+    - match: '  {{YYMMDD}}'
+      scope: constant.numeric.integer.trf
+    - match: $
+      pop: true
+
+  player_line:
+    - match: '([ \d]{4}) ([mMwW])(.{3}) (.{33}) ([ \d]{4}) ({{federation}})  ([ \d]{10}) ({{birthdate}}) ([ \d]\d[.]\d) ([ \d]{3}\d)'
+      captures:
+        1: constant.language.trf # starting.rank.player.trf
+        2: entity.name.constant.trf # sex.player.trf
+        3: entity.name.constant.trf # title.player.trf
+        4: string.trf # name.player.trf
+        5: constant.numeric.integer.trf # rating.fide.player.trf
+        6: entity.name.constant.trf # federation.fide.player.trf
+        7: storage.modifier.trf # number.fide.player.trf
+        8: storage.type.trf # birthdate.player.trf
+        9: constant.numeric.float.trf # points.player.trf
+        10: constant.numeric.integer.trf # rank.player.trf
+      push: player_results
+    - match: $
+      pop: true
+
+  player_results:
+    - match: '  ([ \d]{4}) ([-wWbB]) ([-+WwDdLl1=0HhFfUuZz ])'
+      captures:
+        1: constant.language.trf # starting.rank.opponent.trf
+        2: entity.name.constant.trf # color.player.trf
+        3: entity.name.constant.trf # result.player.trf
+    - match: '.'
+      scope: sublimelinter.outline.violation.trf
+    - match: $
+      pop: 2
+
+  team_line_start:
+    - match: '(.{32})'
+      scope: string.trf # name.team.trf
+      push: team_line
+
+  team_line:
+    - match: '({{rank}})'
+      scope: constant.language.trf
+      push: team_line_more
+    - match: '.'
+      scope: sublimelinter.outline.violation.trf
+    - match: $
+      pop: 2
+
+  team_line_more:
+    - match: ' ({{rank}})'
+      scope: constant.language.trf
+    - match: '.'
+      scope: sublimelinter.outline.violation.trf
+    - match: $
+      pop: 3
+
+  tournament_date:
+    - match: '{{DDMMYYYY}}'
+      scope: storage.type.trf
+    - match: $
+      pop: true
