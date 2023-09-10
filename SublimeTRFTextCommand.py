@@ -79,7 +79,8 @@ def html(text, padded = True):
 	return HTML % text.replace(' ', '&nbsp;')
 
 TOURNAMENT_START_DATE = '    DD/MM/YYYY'
-PLAYER_LINE = '001    1 m  g Mirzoev Azer                      2527 AZE    13400304 1978        4.0    1    26 w 1    13 b 1     8 w 1     4 b 1'
+# PLAYER_LINE = '001    1 m  g Mirzoev Azer                      2527 AZE    13400304 1978        4.0    1    26 w 1    13 b 1     8 w 1     4 b 1'
+PLAYER_LINE = '001    1 m  g Name                              2700 FED         007 1968        3.0    1     2 w 1     3 b 1     4 w 1     5 b 1     6 w 1     7 b 1     8 b 1     9 w 1    10 b 1'
 
 class Phantoms:
 
