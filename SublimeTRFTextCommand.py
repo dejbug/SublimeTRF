@@ -29,6 +29,8 @@ def replaceLineWithText(view, edit, text):
 def addPhantomToCurrentLine(view, html, key = 'trf-phantastic!', single = False):
 	if single: view.erase_phantoms(key)
 	region = getCurrentLineRegion(view)
+	region = sublime.Region(region.a, region.b)
+	print(region)
 	return view.add_phantom(key, region, html, sublime.PhantomLayout.BLOCK)
 
 def removePhantoms(view, key = 'trf-phantastic!'):

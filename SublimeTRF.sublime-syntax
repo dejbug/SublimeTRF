@@ -66,8 +66,16 @@ contexts:
     - match: '^122 '
       scope: keyword.trf # allotted.time.tournament.trf
       push: string
-    - match: '^(XXC|XXR|XXZ) '
+    - match: '^(XXR)\s+(\d+)\s*'
+      captures:
+        1: keyword.trf
+        2: constant.numeric.integer.trf # rounds.tournament.trf
+    - match: '^(XXZ) '
       scope: keyword.trf
+      push: numbers
+    - match: '^(XXC) '
+      scope: keyword.trf
+      push: xxc
     - match: '^132[ ]{86}'
       scope: keyword.trf
       push: dates_line
@@ -77,8 +85,8 @@ contexts:
     - match: '^013 '
       scope: keyword.trf
       push: team_line_start
-    - match: '.'
-      scope: sublimelinter.outline.violation.trf
+    # - match: '.'
+    #   scope: sublimelinter.outline.violation.trf
 
   string:
     - match: .+
@@ -86,9 +94,27 @@ contexts:
     - match: $
       pop: true
 
+  numbers:
+    - match: (\d+)\s*
+      captures:
+        1: constant.numeric.integer.trf
+    - match: .
+      scope: sublimelinter.outline.violation.trf
+    - match: $
+      pop: true
+
   dates_line:
     - match: '  {{YYMMDD}}'
       scope: constant.numeric.integer.trf
+    - match: $
+      pop: true
+
+  xxc:
+    - match: (white1|black1|rank)\s*
+      captures:
+        1: entity.name.constant.trf
+    - match: .
+      scope: sublimelinter.outline.violation.trf
     - match: $
       pop: true
 
